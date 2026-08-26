@@ -21,7 +21,7 @@ export class PokemonService {
    * Un seul appel HTTP pour toute la liste : l'identifiant est extrait de
    * l'URL renvoyée par l'API, ce qui permet d'en déduire l'image.
    */
-  getPokemonList(limit = 20): Observable<PokemonCardData[]> {
+  getPokemonList(limit = 151): Observable<PokemonCardData[]> {
     return this.http
       .get<PokemonListResponse>(`${this.baseUrl}/pokemon?limit=${limit}`)
       .pipe(map((response) => response.results.map((item) => this.toCardData(item))));

@@ -1,0 +1,15 @@
+@if (loading()) {
+  <p class="state">Chargement des Pokémon…</p>
+} @else if (error()) {
+  <p class="state state--error">{{ error() }}</p>
+} @else {
+  <ul class="grid">
+    @for (pokemon of pokemons(); track pokemon.id) {
+      <li>
+        <app-pokemon-card [pokemon]="pokemon" (selected)="onPokemonSelected($event)" />
+      </li>
+    } @empty {
+      <li class="state">Aucun Pokémon à afficher.</li>
+    }
+  </ul>
+}
