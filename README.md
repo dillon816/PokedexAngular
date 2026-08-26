@@ -127,6 +127,8 @@ La séparation suit les trois responsabilités demandées :
 
 ## Fonctionnement
 
+### Route `/` — la liste
+
 ```
 PokemonService          PokemonList                PokemonCard
 (HttpClient)            (état + recherche)         (affichage)
@@ -143,6 +145,29 @@ GET /pokemon?limit=151
                                   ▼
                             filteredPokemons ──[pokemon]──▶ carte
                                              ◀──(selected)──
+```
+
+### Route `/pokemon/:id` — le détail
+
+```
+PokemonList                  Router                    PokemonDetail
+(selected)                                             (ActivatedRoute)
+
+  clic sur une carte
+        │
+        │ router.navigate(['/pokemon', id])
+        ▼
+   URL /pokemon/25 ──────────────────────────▶ snapshot.paramMap.get('id')
+                                                          │
+                          PokemonService                  │
+                          GET /pokemon/25  ◀──────────────┘
+                                │
+                                ▼
+                          Observable ──subscribe──▶ pokemon (signal)
+                                                          │
+                                                          ▼
+                                              types + barres de statistiques
+                                              (div CSS, [style.width.%])
 ```
 
 1. `PokemonService` appelle l'API et transforme la réponse en un modèle prêt à afficher.
