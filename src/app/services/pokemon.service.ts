@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 
 import {
   PokemonCardData,
-  PokemonDetail,
+  PokemonDetailData,
   PokemonListItem,
   PokemonListResponse,
 } from '../models/pokemon.model';
@@ -27,8 +27,13 @@ export class PokemonService {
       .pipe(map((response) => response.results.map((item) => this.toCardData(item))));
   }
 
-  getPokemonDetail(idOrName: string): Observable<PokemonDetail> {
-    return this.http.get<PokemonDetail>(`${this.baseUrl}/pokemon/${idOrName}`);
+  getPokemonDetail(idOrName: string): Observable<PokemonDetailData> {
+    return this.http.get<PokemonDetailData>(`${this.baseUrl}/pokemon/${idOrName}`);
+  }
+
+  /** Les sprites suivent un nommage prévisible basé sur l'identifiant. */
+  getSpriteUrl(id: number): string {
+    return `${this.spriteUrl}/${id}.png`;
   }
 
   private toCardData(item: PokemonListItem): PokemonCardData {
@@ -37,7 +42,7 @@ export class PokemonService {
     return {
       id,
       name: item.name,
-      imageUrl: `${this.spriteUrl}/${id}.png`,
+      imageUrl: this.getSpriteUrl(id),
     };
   }
 

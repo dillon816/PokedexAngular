@@ -1,4 +1,5 @@
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 
 import { PokemonCard } from '../pokemon-card/pokemon-card';
@@ -13,6 +14,7 @@ import { PokemonService } from '../../services/pokemon.service';
 })
 export class PokemonList implements OnInit, OnDestroy {
   private pokemonService = inject(PokemonService);
+  private router = inject(Router);
 
   /**
    * Le projet est en mode zoneless : toute valeur lue dans un @if ou un @for
@@ -74,6 +76,6 @@ export class PokemonList implements OnInit, OnDestroy {
   }
 
   onPokemonSelected(pokemon: PokemonCardData): void {
-    console.log('Pokémon sélectionné :', pokemon.name);
+    this.router.navigate(['/pokemon', pokemon.id]);
   }
 }

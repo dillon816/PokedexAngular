@@ -1,0 +1,37 @@
+<a class="back" routerLink="/">← Retour à la liste</a>
+
+@if (loading()) {
+  <p class="state">Chargement du Pokémon…</p>
+} @else if (error()) {
+  <p class="state state--error">{{ error() }}</p>
+} @else if (pokemon(); as pokemon) {
+  <article class="detail">
+    <header class="detail__header">
+      <img class="detail__image" [src]="imageUrl()" [alt]="pokemon.name" />
+      <div>
+        <p class="detail__id">#{{ pokemon.id.toString().padStart(3, '0') }}</p>
+        <h2 class="detail__name">{{ pokemon.name }}</h2>
+        <ul class="types">
+          @for (entry of pokemon.types; track entry.type.name) {
+            <li class="types__badge">{{ entry.type.name }}</li>
+          }
+        </ul>
+      </div>
+    </header>
+
+    <section>
+      <h3 class="detail__section-title">Statistiques de base</h3>
+      <ul class="stats">
+        @for (entry of pokemon.stats; track entry.stat.name) {
+          <li class="stats__row">
+            <span class="stats__label">{{ statLabel(entry.stat.name) }}</span>
+            <span class="stats__value">{{ entry.base_stat }}</span>
+            <div class="stat-bar-bg">
+              <div class="stat-bar-fill" [style.width.%]="statPercent(entry.base_stat)"></div>
+            </div>
+          </li>
+        }
+      </ul>
+    </section>
+  </article>
+}

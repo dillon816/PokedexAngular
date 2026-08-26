@@ -29,7 +29,7 @@ export interface PokemonStat {
 }
 
 /** Réponse de GET /pokemon/{nom-ou-id}, réduite aux champs affichés. */
-export interface PokemonDetail {
+export interface PokemonDetailData {
   id: number;
   name: string;
   sprites: {

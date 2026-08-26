@@ -6,7 +6,13 @@ Auteur : Dillon Azag
 
 Application Angular qui liste les 151 Pokémon de la première génération à partir de
 l'API publique [PokeAPI](https://pokeapi.co/), avec une recherche par nom qui filtre
-la liste en direct pendant la saisie.
+la liste en direct pendant la saisie. Un clic sur une carte ouvre une page de détail
+présentant les types et les statistiques de base du Pokémon.
+
+| Écran               | Route          |
+| ------------------- | -------------- |
+| Liste + recherche   | `/`            |
+| Détail d'un Pokémon | `/pokemon/:id` |
 
 ---
 
@@ -100,6 +106,7 @@ src/
 ├── app/
 │   ├── components/
 │   │   ├── pokemon-card/      Carte d'un Pokémon (affichage seul)
+│   │   ├── pokemon-detail/    Page de détail : types et statistiques
 │   │   └── pokemon-list/      Liste, recherche et états de chargement
 │   ├── models/
 │   │   └── pokemon.model.ts   Interfaces TypeScript des données de l'API
@@ -147,6 +154,9 @@ GET /pokemon?limit=151
    ou le terme recherché change.
 5. `PokemonCard` reçoit un Pokémon via `input.required()` et remonte le clic via
    `output()`.
+6. `PokemonList` intercepte cet événement et navigue vers `/pokemon/:id`.
+   `PokemonDetail` lit l'identifiant dans l'URL via `ActivatedRoute`, puis demande
+   la fiche complète au service.
 
 ## API utilisée
 
@@ -186,6 +196,14 @@ de recalculer le filtre à chaque touche.
 (ils n'étaient pas dans la configuration générée). Le projet ne contient aucun `any` :
 seuls les champs réellement affichés sont déclarés dans les interfaces, TypeScript
 ignorant simplement les champs supplémentaires renvoyés par l'API.
+
+**Barres de statistiques en CSS.** Aucune librairie de graphiques n'est utilisée :
+chaque barre est une `div` dont la largeur est calculée en pourcentage de la valeur
+maximale théorique d'une statistique (255), via la liaison `[style.width.%]`.
+
+**Identifiant lu dans l'URL.** La page de détail récupère son paramètre avec
+`ActivatedRoute` (`snapshot.paramMap`). L'API acceptant aussi bien un identifiant
+qu'un nom, l'adresse `/pokemon/pikachu` fonctionne au même titre que `/pokemon/25`.
 
 **Désabonnement explicite.** L'abonnement au flux de recherche est stocké dans une
 `Subscription` et libéré dans `ngOnDestroy()`, pour éviter toute fuite mémoire.
