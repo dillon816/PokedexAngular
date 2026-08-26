@@ -1,6 +1,6 @@
 # Pokedex
 
-TD individuel Angular et communication vers une API.
+TD Angular et communication vers une API.
 
 **Auteur : Dillon Azag**
 
