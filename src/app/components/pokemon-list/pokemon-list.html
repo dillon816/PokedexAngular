@@ -1,15 +1,27 @@
+<label class="search">
+  <span class="search__label">Rechercher un Pokémon</span>
+  <input
+    class="search__input"
+    type="search"
+    placeholder="pikachu, char, saur…"
+    (input)="onSearch($event)"
+  />
+</label>
+
 @if (loading()) {
   <p class="state">Chargement des Pokémon…</p>
 } @else if (error()) {
   <p class="state state--error">{{ error() }}</p>
 } @else {
+  <p class="count">{{ filteredPokemons().length }} Pokémon</p>
+
   <ul class="grid">
-    @for (pokemon of pokemons(); track pokemon.id) {
+    @for (pokemon of filteredPokemons(); track pokemon.id) {
       <li>
         <app-pokemon-card [pokemon]="pokemon" (selected)="onPokemonSelected($event)" />
       </li>
     } @empty {
-      <li class="state">Aucun Pokémon à afficher.</li>
+      <li class="state">Aucun Pokémon ne correspond à « {{ searchTerm() }} ».</li>
     }
   </ul>
 }

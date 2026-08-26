@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { debounceTime, distinctUntilChanged, Subject, Subscription } from 'rxjs';
 
 import { PokemonCard } from '../pokemon-card/pokemon-card';
 import { PokemonCardData } from '../../models/pokemon.model';
@@ -10,7 +11,7 @@ import { PokemonService } from '../../services/pokemon.service';
   styleUrl: './pokemon-list.css',
   templateUrl: './pokemon-list.html',
 })
-export class PokemonList implements OnInit {
+export class PokemonList implements OnInit, OnDestroy {
   private pokemonService = inject(PokemonService);
 
   /**
@@ -20,9 +21,36 @@ export class PokemonList implements OnInit {
   pokemons = signal<PokemonCardData[]>([]);
   loading = signal(true);
   error = signal<string | null>(null);
+  searchTerm = signal('');
+
+  /** La liste affichée découle de la liste chargée et du terme recherché. */
+  filteredPokemons = computed(() => {
+    const term = this.searchTerm().trim().toLowerCase();
+
+    if (term === '') {
+      return this.pokemons();
+    }
+
+    return this.pokemons().filter((pokemon) => pokemon.name.includes(term));
+  });
+
+  private searchInput$ = new Subject<string>();
+  private searchSubscription: Subscription;
+
+  constructor() {
+    // debounceTime évite de filtrer à chaque frappe, distinctUntilChanged ignore
+    // une saisie identique à la précédente (support p.38).
+    this.searchSubscription = this.searchInput$
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((term) => this.searchTerm.set(term));
+  }
 
   ngOnInit(): void {
     this.loadPokemons();
+  }
+
+  ngOnDestroy(): void {
+    this.searchSubscription.unsubscribe();
   }
 
   loadPokemons(): void {
@@ -39,6 +67,10 @@ export class PokemonList implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  onSearch(event: Event): void {
+    this.searchInput$.next((event.target as HTMLInputElement).value);
   }
 
   onPokemonSelected(pokemon: PokemonCardData): void {
