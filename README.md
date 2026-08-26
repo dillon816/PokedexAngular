@@ -2,7 +2,7 @@
 
 TD Angular et communication vers une API.
 
-**Auteur : Dillon Azag**
+Auteur : Dillon Azag
 
 Application Angular qui liste les 151 Pokémon de la première génération à partir de
 l'API publique [PokeAPI](https://pokeapi.co/), avec une recherche par nom qui filtre

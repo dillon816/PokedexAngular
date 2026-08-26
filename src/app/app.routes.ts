@@ -1,3 +1,9 @@
 import { Routes } from '@angular/router';
 
-export const routes: Routes = [];
+import { PokemonList } from './components/pokemon-list/pokemon-list';
+
+export const routes: Routes = [
+  { path: '', component: PokemonList },
+  // La route générique doit rester en dernière position.
+  { path: '**', redirectTo: '' },
+];
